@@ -1,0 +1,49 @@
+data:
+  csv_file_path: "data/sensor_data.csv"
+  id_column: "machine_id"
+  time_column: "timestamp"
+  target_column: "time_to_failure"
+  static_categoricals: ["machine_type", "facility"]
+  static_reals: ["installation_date", "max_capacity"]
+  time_varying_known_categoricals: ["operational_mode", "maintenance_status"]
+  time_varying_known_reals: ["scheduled_load", "ambient_temperature"]
+  time_varying_unknown_categoricals: []
+  time_varying_unknown_reals: ["vibration", "temperature", "pressure", "current", "voltage", "rpm"]
+  time_idx: "time_idx"
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  max_prediction_length: 24  # Predict 24 hours ahead
+  max_encoder_length: 168    # Use one week of history
+  min_encoder_length: 24     # Minimum history required
+  batch_size: 64
+  num_workers: 4
+
+model:
+  hidden_size: 64
+  lstm_layers: 2
+  attention_head_size: 4
+  dropout: 0.1
+  hidden_continuous_size: 32
+  learning_rate: 0.001
+  reduce_on_plateau_patience: 3
+  early_stopping_patience: 5
+  gradient_clip_val: 0.1
+  log_interval: 10
+  log_val_interval: 1
+  
+training:
+  max_epochs: 50
+  seed: 42
+  gpus: 1
+  precision: 16  # 16-bit precision for faster training
+  accumulate_grad_batches: 2
+  log_dir: "logs"
+  checkpoint_dir: "checkpoints"
+  use_wandb: false
+  wandb_project: "predictive_maintenance_tft"
+
+evaluation:
+  metrics: ["mae", "mse", "mape", "smape"]
+  visualization_samples: 5
+  confidence_intervals: [50, 90]
